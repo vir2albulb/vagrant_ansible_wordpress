@@ -1,0 +1,23 @@
+---
+- name: Install common files/packages
+  hosts: all
+  become: yes
+  become_method: sudo
+  roles:
+    - common
+
+- name: Install MariaDB
+  hosts: database
+  become: yes
+  become_method: sudo
+  roles:
+    - mariadb
+
+- name: Install WordPress, Nginx and PHP
+  hosts: webserver
+  become: yes
+  become_method: sudo
+  roles:
+    - nginx
+    - php
+    - wordpress
