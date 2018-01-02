@@ -1,0 +1,9 @@
+{
+  "instances": [
+    {
+      "hostname": "wordpressHost",
+      "ip_address": "192.168.33.10",
+      "playbooks": [ "webserver", "database" ]
+    }
+  ]
+}
