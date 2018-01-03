@@ -1,0 +1,66 @@
+---
+- name: Download WordPress archive
+  get_url: url=https://wordpress.org/wordpress-{{ wp_version }}.tar.gz dest=/tmp/wordpress-{{ wp_version }}.tar.gz
+           checksum="sha256:{{ wp_sha256sum }}"
+
+- name: Create directory for websites content
+  file: path=/websites/{{ server_hostname }} state=directory mode=0755
+
+- name: Extract WordPress archive
+  unarchive:
+    src: /tmp/wordpress-{{ wp_version }}.tar.gz
+    dest: /websites/{{ server_hostname }}
+    extra_opts: [--strip-components=1]
+    remote_src: yes
+
+- name: Install WordPress-CLI
+  get_url: url=https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+           dest=/usr/local/bin/wp
+           mode=0755
+
+- name: Add group "wordpress"
+  group: name=wordpress gid=1010
+
+- name: Add user "wordpress"
+  user: name=wordpress group=wordpress home=/websites/{{ server_hostname }} uid=1010
+
+- name: Fetch random salts for WordPress config
+  local_action: command curl https://api.wordpress.org/secret-key/1.1/salt/
+  register: "wp_salt"
+  become: no
+
+- name: Copy WordPress config file
+  template: src=wp-config.php dest=/websites/{{ server_hostname }}/
+
+- name: Change ownership of WordPress server directory
+  file: path=/websites/{{ server_hostname }}/ owner=wordpress group=wordpress state=directory recurse=yes mode=0755
+
+- name: Setup files 644 permissions
+  command: chdir=/websites find . -type f -exec chmod -R 0644 {} \;
+
+- name: Set SELinux file context for the Wordpress directory
+  command: semanage fcontext -a -t httpd_sys_content_t "/websites/{{ server_hostname }}(/.*)?"
+
+- name: Set SELinux file context for wp-config.php
+  command: semanage fcontext -a -t httpd_sys_script_exec_t "/websites/{{ server_hostname }}/wp-config\.php"
+
+- name: Set SELinux file context for wp-content directory
+  command: semanage fcontext -a -t httpd_sys_rw_content_t "/websites/{{ server_hostname }}/wp-content(/.*)?"
+
+- name: Set SELinux file context for *.php files
+  command: semanage fcontext -a -t httpd_sys_script_exec_t "/websites/{{ server_hostname }}/.*\.php"
+
+- name: Set SELinux file context for upgrade directory
+  command: semanage fcontext -a -t httpd_sys_rw_content_t "/websites/{{ server_hostname }}/wp-content/upgrade(/.*)?"
+
+- name: Set SELinux file context for uploads directory
+  command: semanage fcontext -a -t httpd_sys_rw_content_t "/websites/{{ server_hostname }}/wp-content/uploads(/.*)?"
+
+- name: Set SELinux file context for wp-includes php files
+  command: semanage fcontext -a -t httpd_sys_script_exec_t "/websites/{{ server_hostname }}/wp-includes/.*\.php"
+
+- name: Set SELinux file context on all files
+  command: restorecon -Rv /websites/{{ server_hostname }}
+
+- name: Start PHP-FPM service
+  service: name=php-fpm state=started enabled=yes

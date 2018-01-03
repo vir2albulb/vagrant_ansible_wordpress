@@ -4,7 +4,7 @@ socket=/var/lib/mysql/mysql.sock
 # Disabling symbolic-links is recommended to prevent assorted security risks
 symbolic-links=0
 port=3306
-bind-address=::
+bind-address={{ mariadb_ip }}
 # Settings user and group are ignored when systemd is used.
 # If you need to run mysqld under a different user or group,
 # customize your systemd unit file for mariadb according to the

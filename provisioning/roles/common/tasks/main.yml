@@ -2,11 +2,14 @@
 - name: Install epel-release
   yum: name=epel-release state=present
 
-- name: Install Firewalld
-  yum: name=firewalld state=present
+- name: Install Firewalld and update cache
+  yum: name=firewalld state=present update_cache=yes
 
 - name: Start and enable Firewalld service
   service: name=firewalld state=started enabled=yes
 
 - name: Install SEManage
   yum: pkg=policycoreutils-python state=present
+
+- name: Install MySQL-python to connect to MariaDB server
+  yum: name=MySQL-python state=present

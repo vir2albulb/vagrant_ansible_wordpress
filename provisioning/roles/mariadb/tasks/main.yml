@@ -21,3 +21,9 @@
 - name: Create Firewalld rule for MariaDB
   firewalld: service=mysql permanent=true state=enabled immediate=yes
   ignore_errors: yes
+
+- name: Create WordPress database
+  mysql_db: name={{ wp_db_name }} state=present
+
+- name: Create WordPress database user
+  mysql_user: name={{ wp_db_user }} password={{ wp_db_password }} priv={{ wp_db_name }}.*:ALL host={{ webserver_ip }} state=present

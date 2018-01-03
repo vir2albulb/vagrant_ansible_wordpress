@@ -1,7 +1,4 @@
 ---
-- name: Install MySQL-python to connect to MariaDB server
-  yum: name=MySQL-python state=present
-
 - name: Install Nginx
   yum: name=nginx state=present
 
