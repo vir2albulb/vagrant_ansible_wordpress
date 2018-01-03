@@ -5,10 +5,25 @@ require 'json'
 schema = "#{Dir.pwd}/files/config.json"
 instances = JSON.parse(File.read(schema))
 
+# get db ip to configure MariaDB and Wordpress
+db_ip = web_ip = ''
+instances['instances'].each do |v|
+  v['playbooks'].each do |p|
+    if p.to_s == 'database'
+      db_ip =  (v['ip_address']).to_s
+    elsif p.to_s == 'webserver'
+      web_ip = (v['ip_address']).to_s
+    end
+  end
+end
+
+if db_ip == '' || db_ip == web_ip
+  db_ip = web_ip = 'localhost'
+end
+
 Vagrant.configure('2') do |config|
   config.vm.box = 'centos/7'
   config.vm.provider 'virtualbox' do |vb|
-    vb.name = 'vagrant'
     vb.memory = 1024
     vb.cpus = 1
   end
@@ -23,12 +38,16 @@ Vagrant.configure('2') do |config|
 
       k.vm.provision 'ansible' do |ansible|
         ansible.playbook = 'provisioning/playbook.yml'
-        ansible.verbose = 'v'
+        #ansible.verbose = 'v'
         ansible.limit = 'all'
         ansible.groups = {}
         v['playbooks'].each do |i|
           ansible.groups[i] = [ (v['hostname']).to_s ]
         end
+        ansible.extra_vars = {
+          'mariadb_ip' => db_ip,
+          'webserver_ip' => web_ip
+        }
       end
     end
   end
