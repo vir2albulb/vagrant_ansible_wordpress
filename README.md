@@ -11,7 +11,7 @@ in [Vagrantfile](../master/Vagrantfile)
 
 ##### config.json
 
-All parts of playbook uses single one config file:
+All parts of playbook use single config file:
 
 [config.json](../master/files/config.json) format for single instance deployment
 (both database and webserver installed on one VM)
