@@ -55,7 +55,9 @@ deployment (database and webserver installed on two independent VMs)
 #### Install VirtualBox, Vagrant and Ansible
 
 [VirtualBox](https://www.virtualbox.org/manual/ch02.html)
+
 [Vagrant](https://www.vagrantup.com/intro/getting-started/install.html)
+
 [Ansible](http://docs.ansible.com/ansible/latest/intro_installation.html)
 
 #### Download/clone repository
@@ -67,11 +69,18 @@ Download Bitbucket repository or clone it using:
 $ git clone https://bitbucket.org/vir2albulb/vagrant_ansible_wordpress.git
 ```
 
+#### Ansible-vault password
+
+Place ansible vault password under home directory in file `.vault_pass`. Vault
+password is used to encrypt/decrypt
+[group_vars/all](../master/provisioning/group_vars/all).
+
 ### Usage
 
 #### Choose [config.json](../master/files/config.json)
 
-If you want to use config file for 2 VMs just rename it to `config.json`.
+If you want to use config file for 2 VMs just rename
+[config_2vms.json](../master/files/config_2vms.json) to `config.json`.
 [Vagrantfile](../master/Vagrantfile) uses `config.json` as main configuration
 file.
 
@@ -80,6 +89,8 @@ file.
 ```shell
 $ vagrant up
 ```
+
+Use web server IP address `192.168.33.10` to see result in web browser.
 
 #### Changes in playbooks
 

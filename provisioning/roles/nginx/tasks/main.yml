@@ -20,5 +20,5 @@
 - name: Start and enable Nginx service
   service: name=nginx state=started enabled=yes
 
-- name: Set up seboolean to allow Nginx access to remote DB
+- name: Set up seboolean Nginx access to remote DB
   seboolean: name=httpd_can_network_connect_db state={{ can_connect_network_db }} persistent=yes

@@ -3,12 +3,7 @@
     {
       "hostname": "wordpressServer",
       "ip_address": "192.168.33.10",
-      "playbooks": [ "webserver" ]
-    },
-    {
-      "hostname": "databaseServer",
-      "ip_address": "192.168.33.11",
-      "playbooks": [ "database" ]
+      "playbooks": [ "database", "webserver" ]
     }
   ]
 }
