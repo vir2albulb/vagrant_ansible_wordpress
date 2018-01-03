@@ -5,6 +5,8 @@ require 'json'
 schema = "#{Dir.pwd}/files/config.json"
 instances = JSON.parse(File.read(schema))
 
+# set up seboolean network acess
+allow_connect_remote_db = 'yes'
 # get db ip to configure MariaDB and Wordpress
 db_ip = web_ip = ''
 instances['instances'].each do |v|
@@ -19,6 +21,7 @@ end
 
 if db_ip == '' || db_ip == web_ip
   db_ip = web_ip = 'localhost'
+  allow_connect_remote_db = 'no'
 end
 
 Vagrant.configure('2') do |config|
@@ -46,7 +49,8 @@ Vagrant.configure('2') do |config|
         end
         ansible.extra_vars = {
           'mariadb_ip' => db_ip,
-          'webserver_ip' => web_ip
+          'webserver_ip' => web_ip,
+          'can_connect_network_db' => allow_connect_remote_db
         }
       end
     end
