@@ -1,0 +1,21 @@
+---
+- name: Install PHP packages
+  yum: name={{ item }} state=present
+  with_items:
+    - php
+    - php-fpm
+    - php-mysql
+    - php-curl
+    - php-gd
+    - php-xml
+    - php-mbstring
+    - php-mcrypt
+    - php-xmlrpc
+
+- name: Disable PHP default pool
+  command: mv /etc/php-fpm.d/www.conf /etc/php-fpm.d/www.disabled creates=/etc/php-fpm.d/www.disabled
+  notify: Restart PHP-FPM
+
+- name: Copy PHP-FPM configuration
+  template: src=wordpress.conf dest=/etc/php-fpm.d/
+  notify: Restart PHP-FPM
