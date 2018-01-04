@@ -69,12 +69,6 @@ Download Bitbucket repository or clone it using:
 $ git clone https://bitbucket.org/vir2albulb/vagrant_ansible_wordpress.git
 ```
 
-#### Ansible-vault password
-
-Place ansible vault password under home directory in file `.vault_pass`. Vault
-password is used to encrypt/decrypt
-[group_vars/all](../master/provisioning/group_vars/all).
-
 ### Usage
 
 #### Choose [config.json](../master/files/config.json)
