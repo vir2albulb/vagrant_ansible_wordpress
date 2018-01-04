@@ -42,7 +42,6 @@ Vagrant.configure('2') do |config|
       k.vm.provision 'ansible' do |ansible|
         ansible.playbook = 'provisioning/playbook.yml'
         ansible.limit = 'all'
-        ansible.vault_password_file = "#{File.expand_path('~')}/.vault_pass"
         ansible.groups = {}
         v['playbooks'].each do |i|
           ansible.groups[i] = [ (v['hostname']).to_s ]
